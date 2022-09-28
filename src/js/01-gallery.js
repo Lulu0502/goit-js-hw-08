@@ -4,35 +4,26 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 import { galleryItems } from './gallery-items';
 // Change code below this line
 
-const galleryContainer = document.querySelector('.gallery');
-const picturesMarkup = createPicturesMarkup(galleryItems);
+const gallery = document.querySelector('.gallery');
 
-galleryContainer.insertAdjacentHTML('beforeend', picturesMarkup);
+const markup = galleryItems.map(
+    ({ preview, original, description }) =>
+        `<a class="gallery__item" href="${original}">
+        <img class="gallery__image" src="${preview}" 
+        alt="${description}" />
+        </a>`
+)
+    .join("");
 
-function createPicturesMarkup(galleryItems) {
-    return galleryItems.map(({ preview, original, description }) => {
-        return `<div class="gallery__item">
-  <a class="gallery__link" href="large-image.jpg">
-   <img
-    class="gallery__image"
-     src="${preview}"
-     data-source="${original}"
-     alt="${description}"
-    >
-  </a>
-</div>
-`
-    }).join('');
-}
-galleryContainer.addEventListener('click', onGalleryContainerClick);
+gallery.insertAdjacentHTML("beforeend", markup);
 
-function onGalleryContainerClick(e) {
-    e.preventDefault();
-    if (e.target === e.currentTarget) {
-        return;
-    };
-    const currentImage = e.target;
-    console.log(`"Current image:${currentImage.dataset.source}"`);
-    
-};
+
+const lightbox = new SimpleLightbox(".gallery a", {
+    captions: true,
+    captionsData: 'alt',
+    captionPosition: 'bottom',
+    captionDelay: 250,
+});
+
 console.log(galleryItems);
+
